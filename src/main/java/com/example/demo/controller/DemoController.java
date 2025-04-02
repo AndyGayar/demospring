@@ -1,8 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Actor;
-import com.example.demo.repository.ActorRepository;
-import com.example.demo.service.ActorService;
+import com.example.demo.service.SakilaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,10 +12,10 @@ import java.util.List;
 
 @Controller
 public class DemoController {
-    private ActorService actorService;
+    private SakilaService actorService;
 
     @Autowired
-    public DemoController(ActorService actorService) {
+    public DemoController(SakilaService actorService) {
         this.actorService = actorService;
     }
 
@@ -56,6 +55,12 @@ public class DemoController {
     public String guardarActor(Actor actor) {
         actorService.save(actor);
         return "redirect:/actores";
+    }
+
+    @GetMapping("/films")
+    public String films(Model model) {
+        model.addAttribute("films", actorService.getAllFilms());
+        return "films";
     }
 
 
