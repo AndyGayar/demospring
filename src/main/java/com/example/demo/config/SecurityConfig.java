@@ -16,9 +16,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserService userService;
+    private final CustomAuthenticationSuccessHandler successHandler;
 
-    public SecurityConfig(UserService userService) {
+    public SecurityConfig(UserService userService, CustomAuthenticationSuccessHandler successHandler) {
         this.userService = userService;
+        this.successHandler = successHandler;
     }
 
     @Bean
@@ -26,11 +28,13 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/dashboard/**").hasRole("ADMIN")
+                        .requestMatchers("/colaborator/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/")
+                        .successHandler(successHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout
